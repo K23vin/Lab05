@@ -63,16 +63,17 @@ public class Lab05 {
     }
 
     private void loadData() {
-        dataEntries = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader("datos.csv"))) {
-            String[] line;
-            while ((line = reader.readNext()) != null) {
-                dataEntries.add(new DataEntry(line[0], line[1], line[2], line[3]));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    dataEntries = new ArrayList<>();
+    try (CSVReader reader = new CSVReader(new FileReader("datos.csv"))) {
+        String[] line;
+        while ((line = reader.readNext()) != null) {
+            dataEntries.add(new DataEntry(line[0], line[1], line[2], line[3]));
         }
+    } catch (IOException | com.opencsv.exceptions.CsvValidationException e) {
+        e.printStackTrace();
     }
+}
+
 
     private List<String> getUniqueValues(int columnIndex) {
         return dataEntries.stream()
