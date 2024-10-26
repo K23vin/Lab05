@@ -82,22 +82,25 @@ public class Lab05 {
     }
 
     private void filterData() {
-        String filter1 = (String) filter1Combo.getSelectedItem();
-        String filter2 = (String) filter2Combo.getSelectedItem();
-        String filter3 = (String) filter3Combo.getSelectedItem();
-        String filter4 = (String) filter4Combo.getSelectedItem();
+    String filter1 = (String) filter1Combo.getSelectedItem();
+    String filter2 = (String) filter2Combo.getSelectedItem();
+    String filter3 = (String) filter3Combo.getSelectedItem();
+    String filter4 = (String) filter4Combo.getSelectedItem();
 
-        Map<String, Long> resultCounts;
-        resultCounts = dataEntries.stream()
-                .filter(entry -> entry.matches(filter1, filter2, filter3, filter4))
-                .collect(Collectors.groupingBy(DataEntry::getValue, Collectors.counting()));
+    Map<String, Long> resultCounts;
+    
+    // Ajuste en la lambda para especificar qué columna quieres usar (ejemplo con columna 0)
+    resultCounts = dataEntries.stream()
+            .filter(entry -> entry.matches(filter1, filter2, filter3, filter4))
+            .collect(Collectors.groupingBy(entry -> entry.getValue(0), Collectors.counting()));
 
-        resultArea.setText("Top 3 resultados:\n");
-        resultCounts.entrySet().stream()
-            .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-            .limit(3)
-            .forEach(entry -> resultArea.append(entry.getKey() + ": " + entry.getValue() + "\n"));
-    }
+    resultArea.setText("Top 3 resultados:\n");
+    resultCounts.entrySet().stream()
+        .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+        .limit(3)
+        .forEach(entry -> resultArea.append(entry.getKey() + ": " + entry.getValue() + "\n"));
+}
+
 
     private void downloadCSV() {
         try (CSVWriter writer = new CSVWriter(new FileWriter("resultados.csv"))) {
