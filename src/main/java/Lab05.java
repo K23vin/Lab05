@@ -90,7 +90,7 @@ public class Lab05 {
 
     Map<String, Long> resultCounts;
     
-    // Ajuste en la lambda para especificar qué columna quieres usar (ejemplo con columna 0)
+
     resultCounts = dataEntries.stream()
             .filter(entry -> entry.matches(filter1, filter2, filter3, filter4))
             .collect(Collectors.groupingBy(entry -> entry.getValue(0), Collectors.counting()));
@@ -113,25 +113,32 @@ public class Lab05 {
         }
     }
 
-    private void showChart() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+private void showChart() {
+    
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        
-        dataset.addValue(1, "Categoria 1", "Valor 1");
-        dataset.addValue(2, "Categoria 1", "Valor 2");
-        dataset.addValue(3, "Categoria 1", "Valor 3");
+   
+    Map<String, Long> resultCounts = dataEntries.stream()
+            .collect(Collectors.groupingBy(entry -> entry.getValue(0), Collectors.counting()));
 
-        JFreeChart chart = ChartFactory.createBarChart("Ejemplo de Gráfica", "Categoría", "Valor", dataset);
-        ChartPanel chartPanel = new ChartPanel(chart);
-        JFrame chartFrame = new JFrame();
-        chartFrame.add(chartPanel);
-        chartFrame.pack();
-        chartFrame.setVisible(true);
-    }
+    
+    resultCounts.forEach((key, value) -> dataset.addValue(value, "Frecuencia", key));
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(Lab05::new);
-    }
+    
+    JFreeChart chart = ChartFactory.createBarChart(
+            "Frecuencia de Valores", 
+            "Valores", 
+            "Cantidad", 
+            dataset 
+    );
+
+   
+    ChartPanel chartPanel = new ChartPanel(chart);
+    JFrame chartFrame = new JFrame("Gráfica de datos CSV");
+    chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    chartFrame.add(chartPanel);
+    chartFrame.pack();
+    chartFrame.setVisible(true);
 }
 
 class DataEntry {
