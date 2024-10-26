@@ -62,7 +62,7 @@ public class Lab05 {
         frame.setVisible(true);
     }
 
-    private void loadData() {
+private void loadData() {
     dataEntries = new ArrayList<>();
     try (CSVReader reader = new CSVReader(new FileReader("datos.csv"))) {
         String[] line;
@@ -82,15 +82,15 @@ public class Lab05 {
                 .collect(Collectors.toList());
     }
 
-    private void filterData() {
+private void filterData() {
     String filter1 = (String) filter1Combo.getSelectedItem();
     String filter2 = (String) filter2Combo.getSelectedItem();
     String filter3 = (String) filter3Combo.getSelectedItem();
     String filter4 = (String) filter4Combo.getSelectedItem();
 
     Map<String, Long> resultCounts;
-    
-
+   
+    // Ajuste en la lambda para especificar qué columna se quiere usar (ejemplo con columna 0)
     resultCounts = dataEntries.stream()
             .filter(entry -> entry.matches(filter1, filter2, filter3, filter4))
             .collect(Collectors.groupingBy(entry -> entry.getValue(0), Collectors.counting()));
@@ -107,38 +107,44 @@ public class Lab05 {
         try (CSVWriter writer = new CSVWriter(new FileWriter("resultados.csv"))) {
             String[] header = {"Resultado", "Cantidad"};
             writer.writeNext(header);
-           
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 private void showChart() {
-    
+    // Creación del conjunto de datos para la gráfica
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-   
+    // Filtro de los datos y conteo de las ocurrencias de cada valor en la columna 0 
     Map<String, Long> resultCounts = dataEntries.stream()
             .collect(Collectors.groupingBy(entry -> entry.getValue(0), Collectors.counting()));
 
-    
+    // Agregar los datos al dataset para graficar
     resultCounts.forEach((key, value) -> dataset.addValue(value, "Frecuencia", key));
 
-    
+    // Creación de la gráfica con los datos
     JFreeChart chart = ChartFactory.createBarChart(
-            "Frecuencia de Valores", 
-            "Valores", 
-            "Cantidad", 
-            dataset 
+            "Frecuencia de Valores", // Título del gráfico
+            "Valores", // Eje X
+            "Cantidad", // Eje Y
+            dataset // Conjunto de datos
     );
 
-   
+    // Panel para mostrar la gráfica
     ChartPanel chartPanel = new ChartPanel(chart);
     JFrame chartFrame = new JFrame("Gráfica de datos CSV");
     chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     chartFrame.add(chartPanel);
     chartFrame.pack();
     chartFrame.setVisible(true);
+}
+
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(Lab05::new);
+    }
 }
 
 class DataEntry {
